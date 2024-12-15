@@ -1,101 +1,108 @@
-# RL24_HW_2
+# NewRelease: Improved Codebase
 
-## Instructions
+## Overview
 
-### 1. Clone the repository:
-Clone the repository into a local folder:
+The **NewRelease** branch introduces a more readable and clearer version of the code, developed after the homework deadline. This update implements effort-based control for the manipulator across all four available trajectories.
+
+---
+
+## Setup Instructions
+
+### 1. Clone the Repository
+Download the repository from GitHub:
 ```bash
-git clone https://github.com/ferd-bot/RL_24_Homewrok_2_Robotics.git
+git clone <repository_url>
 ```
 
-### 2. Configure and build the packages:
-To configure and build all the packages in the workspace:
+### 2. Configure and Build the Workspace
+To configure and build the workspace:
 ```bash
 colcon build
 source install/setup.bash
 ```
 
----
-
-## Launching Packages
-
-### 1. Launch the `iiwa` model with RViz:
-To launch the IIWA model with RViz and the default command interface set to "position":
-```bash
-ros2 launch iiwa_bringup iiwa.launch.py
-```
-
-### 2. Launch the KDL node:
-To launch the KDL node with the default command interface set to "position":
-```bash
-ros2 run ros2_kdl_package ros2_kdl_node
-```
-
-### 3. Use velocity commands:
-To use velocity commands:
-```bash
-ros2 run ros2_kdl_package ros2_kdl_node --ros-args -p cmd_interface:=velocity
-ros2 launch iiwa_bringup iiwa.launch.py command_interface:="velocity" robot_controller:="velocity_controller"
-```
-
-### 4. Use effort commands (with Gazebo):
-To use effort commands with Gazebo simulation:
-```bash
-ros2 run ros2_kdl_package ros2_kdl_node --ros-args -p cmd_interface:=effort
-ros2 launch iiwa_bringup iiwa.launch.py command_interface:="effort" robot_controller:="effort_controller" use_sim:="true"
-```
+**Note**: The repository download includes extra files. Manually remove unnecessary files and move the required ones into the `src` folder.
 
 ---
 
-## Planner Selection
+## Launching the Manipulator
 
-You can use the following commands to select and start a specific trajectory. Open another terminal and use these commands to set the planner:
+### 1. Control Modes
+The new code supports controlling the manipulator in three modes:
 
-### Available Planners:
-
-- **Planner 0 (Trapezoidal Linear):**
+- **Position Mode**: 
+  Launch with the `iiwa_arm_controller` (with RViz):
   ```bash
-  ros2 param set /ros2_kdl_node current_planner_index 0
+  ros2 launch iiwa_bringup iiwa.launch.py command_interface:="position" robot_controller:="iiwa_arm_controller"
   ```
 
-- **Planner 1 (Cubic Linear):**
+- **Velocity Mode**: 
+  Launch with the `velocity_controller` (with RViz):
   ```bash
-  ros2 param set /ros2_kdl_node current_planner_index 1
+  ros2 launch iiwa_bringup iiwa.launch.py command_interface:="velocity" robot_controller:="velocity_controller"
   ```
 
-- **Planner 2 (Trapezoidal Circular):**
+- **Effort Mode**: 
+  Launch with the `effort_controller` (with Gazebo simulation):
   ```bash
-  ros2 param set /ros2_kdl_node current_planner_index 2
+  ros2 launch iiwa_bringup iiwa.launch.py command_interface:="effort" robot_controller:="effort_controller" use_sim:="true"
   ```
 
-- **Planner 3 (Cubic Circular):**
+### 2. Launching Trajectories
+To execute trajectories, open a new terminal and use the following commands based on the desired control mode:
+
+- **Position Mode**:
   ```bash
-  ros2 param set /ros2_kdl_node current_planner_index 3
+  ros2 run ros2_kdl_package ros2_kdl_node 0 --ros-args -p cmd_interface:=position
   ```
 
-- **Planner 4 (Home):**
+- **Velocity Mode**:
   ```bash
-  ros2 param set /ros2_kdl_node current_planner_index 4
+  ros2 run ros2_kdl_package ros2_kdl_node 0 --ros-args -p cmd_interface:=velocity
   ```
 
-**Note**: The possible sequence of trajectories is the selected trajectory followed by `home`. To start a new trajectory, you need to restart the KDL node.
+- **Effort Mode**:
+  ```bash
+  ros2 run ros2_kdl_package ros2_kdl_node 0 --ros-args -p cmd_interface:=effort
+  ```
 
 ---
 
-## Topic Monitoring
+## Available Trajectories
 
-You can monitor trajectory or torque errors using the following commands:
+The following trajectories are supported, all with effort-based control:
 
-- **Trajectory error:**
-  ```bash
-  ros2 topic echo /trajectory_error
-  ```
+1. **Linear with Trapezoidal Velocity Profile**:
+   ```bash
+   ros2 run ros2_kdl_package ros2_kdl_node 0 --ros-args -p cmd_interface:=effort
+   ```
 
-- **Torque error:**
-  ```bash
-  ros2 topic echo /torque_error
-  ```
+2. **Linear with Cubic Velocity Profile**:
+   ```bash
+   ros2 run ros2_kdl_package ros2_kdl_node 1 --ros-args -p cmd_interface:=effort
+   ```
 
---- 
+3. **Circular with Trapezoidal Velocity Profile**:
+   ```bash
+   ros2 run ros2_kdl_package ros2_kdl_node 2 --ros-args -p cmd_interface:=effort
+   ```
 
-With this configuration, you can launch and test trajectories, monitor data, and configure the robot for different operational modes.
+4. **Circular with Cubic Velocity Profile**:
+   ```bash
+   ros2 run ros2_kdl_package ros2_kdl_node 3 --ros-args -p cmd_interface:=effort
+   ```
+
+---
+
+## Key Updates
+
+### What's Changed?
+- The trajectories remain the same as the previous version.
+- Control logic in `control.cpp` has been updated.
+- Effort-based control is now implemented using the `idCntr` function.
+
+---
+
+## Notes
+
+- For simplicity, only videos demonstrating **effort-based control with Gazebo** are attached.
