@@ -17,7 +17,7 @@ from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, Regi
 from launch.conditions import IfCondition, UnlessCondition
 from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution, OrSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
@@ -91,7 +91,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'use_planning',
             default_value='false',
-            description='Start robot with Moveit2 move_group planning \
+            description='Start robot with Moveit2 `move_group` planning \
                          config for Pilz and OMPL.',
         )
     )
@@ -291,17 +291,24 @@ def generate_launch_description():
         parameters=[
             robot_description,
         ],
-        condition=UnlessCondition(use_planning),
+        condition=UnlessCondition(OrSubstitution(use_planning, use_sim)),
     )
     iiwa_simulation_world = PathJoinSubstitution(
         [FindPackageShare(description_package),
             'gazebo/worlds', 'empty.world']
     )
 
-
-    declared_arguments.append(DeclareLaunchArgument('gz_args', default_value='-r -v 1 empty.sdf',
-                              description='Arguments for gz_sim'),)    
-
+    """declared_arguments.append(DeclareLaunchArgument('gz_args', default_value='-r -v 1 empty.sdf',
+                              description='Arguments for gz_sim'),)"""
+        
+    declared_arguments.append(DeclareLaunchArgument('gz_args', default_value=iiwa_simulation_world,
+                            description='Arguments for gz_sim'),)
+    
+    """
+    export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:world_simulation_models
+        Siccome il suo empty.world si richiama un ground plane e un sun, assicurati di avere tali modelli installati da qualche
+        parte sul tuo pc, e metti quel percorso nella EV
+    """
     gazebo = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 [PathJoinSubstitution([FindPackageShare('ros_gz_sim'),
@@ -342,7 +349,7 @@ def generate_launch_description():
         arguments=[robot_controller, '--controller-manager', [namespace, 'controller_manager']],
     )
 
-    # Delay joint_state_broadcaster after spawn_entity
+    # Delay `joint_state_broadcaster` after spawn_entity
     delay_joint_state_broadcaster_spawner_after_spawn_entity = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=spawn_entity,
@@ -351,7 +358,7 @@ def generate_launch_description():
         condition=IfCondition(use_sim),
     )
 
-    # Delay joint_state_broadcaster after control_node
+    # Delay `joint_state_broadcaster` after control_node
     delay_joint_state_broadcaster_spawner_after_control_node = RegisterEventHandler(
         event_handler=OnProcessStart(
             target_action=control_node,
@@ -360,7 +367,7 @@ def generate_launch_description():
         condition=UnlessCondition(use_sim),
     )
 
-    # Delay rviz start after joint_state_broadcaster
+    # Delay rviz start after `joint_state_broadcaster`
     delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
@@ -369,7 +376,7 @@ def generate_launch_description():
         condition=IfCondition(start_rviz),
     )
 
-    # Delay start of robot_controller after joint_state_broadcaster
+    # Delay start of robot_controller after `joint_state_broadcaster`
     delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
