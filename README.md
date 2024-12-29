@@ -106,3 +106,8 @@ The following trajectories are supported, all with effort-based control:
 ## Notes
 
 - For simplicity, only videos demonstrating **effort-based control with Gazebo** are attached.
+- https://youtu.be/cEfi1KJ_OZ8 - Trajectory Linear Trapezoidal
+- https://youtu.be/gzo2es7OYRE - Trajectory Linear Cubic
+- https://youtu.be/rOgTPujcLVo - Trajectory Circular Trapezoidal
+- https://youtu.be/Tc63nHkTe2A - Trajectory Circular Trapezoidal
+- https://youtu.be/u4lxzMbrPqs - Velocity Controller: Trajectory Linear Trapezoidal
