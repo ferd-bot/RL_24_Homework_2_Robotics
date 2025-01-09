@@ -216,12 +216,15 @@ KDL::Jacobian KDLRobot::getEEBodyJacobian()
 
 Eigen::VectorXd KDLRobot::getEEJacDotqDot()
 {
-    Eigen::VectorXd q_dot = this->getJntVelocities(); // Velocità congiunte
+    Eigen::VectorXd q_dot = this->getJntVelocities();
 
+    //J_dot * q_dot
     Eigen::VectorXd jacobian_dot_q_dot = s_J_dot_ee_.data * q_dot;
 
     return jacobian_dot_q_dot;
 }
+
+
 
 
 
