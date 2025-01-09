@@ -5,7 +5,7 @@
 ### 1. Clone the repository:
 Clone the repository into a local folder:
 ```bash
-git clone https://github.com/ferd-bot/RL_24_Homewrok_2_Robotics.git
+git clone https://github.com/ferd-bot/RL_24_Homework_2_Robotics.git
 ```
 
 ### 2. Configure and build the packages:
