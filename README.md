@@ -1,19 +1,30 @@
 # RL24_HW_2
+Ferdinando Dionisio, Vittorio Lisi, Giovanni Gabriele Imbimbo, Emanuele Cifelli
 
-## Instructions
+## **Overview** 
+The goal of this homework is to develop a ROS package to dynamically control a 7-degrees-of-freedom
+robotic manipulator arm into the Gazebo environment.
 
-### 1. Clone the repository:
-Clone the repository into a local folder:
-```bash
-git clone https://github.com/ferd-bot/RL_24_Homewrok_2_Robotics.git
-```
+---
 
-### 2. Configure and build the packages:
-To configure and build all the packages in the workspace:
-```bash
-colcon build
-source install/setup.bash
-```
+## **Instructions**  
+
+1. Download the repository from GitHub:  
+   ```bash
+   cd src
+   git clone -b REV_3 https://github.com/ferd-bot/RL_24_Homewrok_2_Robotics.git .
+   ```
+**Warn**
+the git clone reported (with the point) works only if the directory in which it is executed is empty; 
+if this is not the case, download the repository normally (without a point) and manually move the files out of the "RL_24_Homework_1_Robotics" folder, always remaining inside the src.
+
+2. To configure and build all the packages in the workspace:  
+   ```bash
+   cd ~/ros2_ws
+   rm -rf build/ install/ log/
+   colcon build
+   source install/setup.bash
+   ```
 
 ---
 
