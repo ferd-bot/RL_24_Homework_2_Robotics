@@ -11,7 +11,7 @@ This homework involves developing a ROS package to dynamically control a 7-degre
 1. Clone the repository from GitHub:  
    ```bash
    cd src
-   git clone -b REV_3 https://github.com/ferd-bot/RL_24_Homewrok_2_Robotics.git .
+   git clone -b REV_3 https://github.com/ferd-bot/RL_24_Homework_2_Robotics.git .
    ```
    **Warning**:  
    The above `git clone` command (with the dot) works only if the target directory is empty.  
