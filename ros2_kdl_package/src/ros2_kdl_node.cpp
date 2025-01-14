@@ -48,11 +48,11 @@ public:
         }
 
 	// Declare control_space parameter
-	declare_parameter("control_space", "operational_space"); // default to "operational_space"
+	declare_parameter("control_space", "niente"); // default to "niente"
 	get_parameter("control_space", control_space_);
 	RCLCPP_INFO(get_logger(), "Current control space is: '%s'", control_space_.c_str());
 
-	if (!(control_space_ == "joint_space" || control_space_ == "operational_space"))
+	if (!(control_space_ == "joint_space" || control_space_ == "operational_space") && cmd_interface_ == "effort")
 	{
 	    RCLCPP_ERROR(get_logger(), "Selected control_space is not valid! Use 'joint_space' or 'operational_space'.");
 	    return;
@@ -90,6 +90,7 @@ public:
         q_max.data << 2.96, 2.09, 2.96, 2.09, 2.96, 2.09, 2.96;         // TODO: read from URDF file
         robot_->setJntLimits(q_min, q_max);
         joint_positions_.resize(nj);
+        joint_positions_.data.setZero();
         joint_velocities_.resize(nj);
         joint_positions_cmd_.resize(nj);
         joint_velocities_cmd_.resize(nj);
@@ -126,7 +127,7 @@ public:
         robot_->update(toStdVector(init_joint_positions_.data), std::vector<double>(nj, 0.0)); }
 	else {
         // Update KDLRobot object with initial joint positions
-        robot_->update(toStdVector(joint_positions_.data), std::vector<double>(nj, 0.0)); }
+        robot_->update(toStdVector(joint_positions_.data),toStdVector(joint_velocities_.data)); }
         
         // Add end-effector frame if necessary
         KDL::Frame f_T_ee = KDL::Frame::Identity();
@@ -346,7 +347,7 @@ private:
                 for (int i = 0; i < torques.size(); ++i)
                 {
                     joint_efforts_cmd_(i) = torques(i);
-                    RCLCPP_INFO(this->get_logger(), "q_dot[%u]: %.6f", i, torques(i));
+                    RCLCPP_INFO(this->get_logger(), "torques[%u]: %.6f", i, torques(i));
                 }
 
 	    	// === Pubblicazione per rqt_plot ===
@@ -406,7 +407,7 @@ private:
                 for (int i = 0; i < torques.size(); ++i)
                 {
                     joint_efforts_cmd_(i) = torques(i);
-                    RCLCPP_INFO(this->get_logger(), "q_dot[%u]: %.6f", i, torques(i));
+                    RCLCPP_INFO(this->get_logger(), "torques[%u]: %.6f", i, torques(i));
                 }
 	    	// === Pubblicazione per rqt_plot ===
 	    	std_msgs::msg::Float64MultiArray torque_msg;
@@ -577,4 +578,3 @@ int main(int argc, char **argv)
     rclcpp::shutdown();
     return 0;
 }
-
