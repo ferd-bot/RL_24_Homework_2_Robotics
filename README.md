@@ -144,3 +144,4 @@ To visualize it, you must run the KDL node in **Effort Mode** at least once.
 For simplicity, only videos demonstrating **Effort-Based Control in Operational Space with Gazebo** are attached:
 - [Operational Space](https://www.youtube.com/watch?v=XFmY7oIKG8c)
 - [Joint Space](https://www.youtube.com/watch?v=Fi35H55Z6VA)
+- [Velocity Controller: Trajectory Linear Trapezoidal](https://youtu.be/u4lxzMbrPqs)
